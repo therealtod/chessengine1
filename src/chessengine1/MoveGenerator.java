@@ -35,17 +35,25 @@ public class MoveGenerator
         {
             black_pawn_moves[i] |= Board.squares[i - 8];
         }
+        
+        
+                
+                
+                
         //initializing all rook moves
         for (i = 0; i < 64; ++i)
         {
             for (j = 0; j < 64; ++j)
             {
-                if (Board.n_rank[i] == Board.n_rank[j] || Board.n_file[i] == Board.n_file[j])
+                if ((Board.n_rank[i] == Board.n_rank[j] || Board.n_file[i] == Board.n_file[j]) && i != j)
                 {
                     rook_attacks[i] |= Board.squares[j];
                 }
             }
+            //rook_attacks [i] -= Board.squares[i];
         }
+                
+        
         //initializing all knight moves
         for (i = 0; i < 64; ++i)
         {
@@ -81,6 +89,10 @@ public class MoveGenerator
            {
                knight_attacks[i] |= Board.squares[i+17];
            }
+        }
+        for (i=0; i<64; ++i)
+        {
+            Bitboards.display(knight_attacks[i]);
         }
         //initializing all bishop moves
         for (i=0; i<64; ++i)
