@@ -174,7 +174,56 @@ public class Bitboards
         occupied_squares = white_pieces | black_pieces;
     }
 
-    
+    static public void display(Long b)
+    {
+        int rank, file;
+        char tmp;
+
+        for (rank = 8; rank >= 1; rank--)
+        {
+            System.out.println("    +---+---+---+---+---+---+---+---+");
+            System.out.print( rank + "   |");
+            for (file = 1; file <= 8; file++)
+            {
+                if ((b & Board.squares[8 * (rank - 1) + file - 1]) != 0)
+                {
+                    tmp = 'x';
+                } else
+                {
+                    tmp = ' ';
+                }
+                System.out.print(" " + tmp + " |");
+            }
+            System.out.println();
+        }
+        System.out.println("    +---+---+---+---+---+---+---+---+");
+        System.out.println("      a   b   c   d   e   f   g   h");
+
+        /*else
+         {
+         std::cout << "      h   g   f   e   d   c   b   a" << std::endl;
+         for (rank = 1; rank <= 8; rank++)
+         {
+         std::cout << "    +---+---+---+---+---+---+---+---+" << std::endl;
+         std::cout << "    |";
+         for (file = 8; file >= 1; file--)
+         {
+         std::cout << " " << PIECENAMES[square[BOARDINDEX[file][rank]]] << "|";
+         }
+         std::cout << std::setw(3) << rank << std::endl;
+         }
+         std::cout << "    +---+---+---+---+---+---+---+---+" << std::endl << std::endl;
+         }*/
+        try
+        {
+            System.in.read();
+        } 
+        catch (Exception e)
+        {
+            
+        }
+        return;
+    }
 
     static long w_pawns = 0L, w_rooks = 0L, w_knights = 0L, w_bishops = 0L,
             w_queens = 0L, w_king = 0L, b_pawns = 0L, b_rooks = 0L,

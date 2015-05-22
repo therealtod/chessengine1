@@ -13,9 +13,11 @@ import javax.swing.*;
  */
 public class ChessEngine
 {
-    public static void main (String[] args)
+    public static void main (String[] args) 
     {
         Board.init();
+        
+        MoveGenerator.init();
         Bitboards board = new Bitboards();
         board.set_init_position();
         new ChessboardGUI();
