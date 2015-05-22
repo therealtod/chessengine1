@@ -49,19 +49,45 @@ public class MoveGenerator
         //initializing all knight moves
         for (i = 0; i < 64; ++i)
         {
-           if (Board.n_rank[i] >= 2 && Board.n_file[i] >=1)
+           if (Board.n_rank[i] > 2 && Board.n_file[i] >1)
            {
                knight_attacks[i] |= Board.squares[i-17];
            }
-           if (Board.n_rank[i] >= 2 && Board.n_file[i] <=7)
+           if (Board.n_rank[i] > 2 && Board.n_file[i] <8)
            {
                knight_attacks[i] |= Board.squares[i-15];
            }
-           if (Board.n_rank[i] >= 2 && Board.n_file[i] >=1)
+           if (Board.n_rank[i] > 1 && Board.n_file[i] >2)
            {
-               knight_attacks[i] |= Board.squares[i-17];
+               knight_attacks[i] |= Board.squares[i-10];
            }
-           //TO BE CONTINUED
+           if (Board.n_rank[i] > 1 && Board.n_file[i] <7)
+           {
+               knight_attacks[i] |= Board.squares[i-6];
+           }
+           if (Board.n_rank[i] <8 && Board.n_file[i] >2)
+           {
+               knight_attacks[i] |= Board.squares[i+6];
+           }
+           if (Board.n_rank[i] <8 && Board.n_file[i] <7)
+           {
+               knight_attacks[i] |= Board.squares[i+10];
+           }
+           if (Board.n_rank[i] <7 && Board.n_file[i] >1)
+           {
+               knight_attacks[i] |= Board.squares[i+15];
+           }
+           if (Board.n_rank[i] <7 && Board.n_file[i] <8)
+           {
+               knight_attacks[i] |= Board.squares[i+17];
+           }
+        }
+        //initializing all bishop moves
+        for (i=0; i<64; ++i)
+        {
+            int rank = Board.n_rank[i];
+            int file = Board.n_file[i];
+            //TO BE CONTINUED
         }
     }
 
@@ -79,7 +105,7 @@ public class MoveGenerator
             targets = ~Bitboards.white_pieces;
             while (current_piece != 0)
             {
-                from_square = Bitboards.bitScanForwardDeBruijn64(current_piece);
+                from_square = Board.bitScanForwardDeBruijn64(current_piece);
                 move.set_from_square(from_square);
 
             }
