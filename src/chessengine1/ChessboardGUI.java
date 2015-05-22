@@ -185,13 +185,11 @@ public class ChessboardGUI extends JPanel implements MouseListener,
     {
         Image img= null;
         
-        Bitboards b;
-        b = new Bitboards();
-        b.set_init_position();
+        Bitboards.set_init_position();
         
         Stringboard sb = new Stringboard();
         
-        sb= b.toStringboard();
+        sb= Bitboards.toStringboard();
         
         PiecesSet ps = new BWPiecesSet ();
         char[] pos = sb.getCurrent_position();

@@ -18,8 +18,7 @@ public class ChessEngine
         Board.init();
         
         MoveGenerator.init();
-        Bitboards board = new Bitboards();
-        board.set_init_position();
+        Bitboards.set_init_position();
         new ChessboardGUI();
     }
 }

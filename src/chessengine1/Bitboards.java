@@ -1,5 +1,7 @@
 package chessengine1;
 
+import static chessengine1.Position.*;
+
 /**
  *
  * @author tod
@@ -7,12 +9,7 @@ package chessengine1;
 public class Bitboards
 {
 
-    /*public Bitboards()
-     {
-     w_pawns = w_rooks = w_knights = w_bishops = w_queens = w_king = b_pawns = b_rooks
-     = b_knights = b_bishops = b_queens = b_king = 0L;
-     }*/
-    public Stringboard toStringboard()
+    public static Stringboard toStringboard()
     {
         Stringboard s = new Stringboard();
         for (int i = 0; i < 64; ++i)
@@ -117,7 +114,7 @@ public class Bitboards
         }
     }
 
-    public void set_init_position()
+    public static void set_init_position()
     {
         char[] init = Stringboard.getInit_position();
         for (int i = 0; i < 64; ++i)
@@ -165,12 +162,12 @@ public class Bitboards
 
             }
         }
-        white_pieces = Bitboards.w_pawns | Bitboards.w_rooks
-                | Bitboards.w_knights | Bitboards.w_bishops | Bitboards.w_queens
-                | Bitboards.w_king;
-        black_pieces = Bitboards.b_pawns | Bitboards.b_rooks
-                | Bitboards.b_knights | Bitboards.b_bishops | Bitboards.b_queens
-                | Bitboards.b_king;
+        white_pieces = Position.w_pawns | Position.w_rooks
+                | Position.w_knights | Position.w_bishops | Position.w_queens
+                | Position.w_king;
+        black_pieces = Position.b_pawns | Position.b_rooks
+                | Position.b_knights | Position.b_bishops | Position.b_queens
+                | Position.b_king;
         occupied_squares = white_pieces | black_pieces;
     }
 
@@ -182,7 +179,7 @@ public class Bitboards
         for (rank = 8; rank >= 1; rank--)
         {
             System.out.println("    +---+---+---+---+---+---+---+---+");
-            System.out.print( rank + "   |");
+            System.out.print(rank + "   |");
             for (file = 1; file <= 8; file++)
             {
                 if ((b & Board.squares[8 * (rank - 1) + file - 1]) != 0)
@@ -217,17 +214,88 @@ public class Bitboards
         try
         {
             System.in.read();
-        } 
-        catch (Exception e)
+        } catch (Exception e)
         {
-            
+
         }
         return;
     }
-
-    static long w_pawns = 0L, w_rooks = 0L, w_knights = 0L, w_bishops = 0L,
-            w_queens = 0L, w_king = 0L, b_pawns = 0L, b_rooks = 0L,
-            b_knights = 0L, b_bishops = 0L, b_queens = 0L, b_king = 0L;
-    static long white_pieces = 0L, black_pieces = 0L, occupied_squares = 0L;
+    /*
+     public static void init_chessboard()
+     {
+        
+     char [] board_string = Stringboard.getInit_position();
+        
+     long w_pawns= 0L, w_rooks= 0L, w_knights= 0L, w_bishops= 0L, 
+     w_queens= 0L, w_king= 0L, b_pawns= 0L, b_rooks= 0L, 
+     b_knights= 0L, b_bishops= 0L, b_queens= 0L, b_king= 0L;
+        
+     string_to_bitboards (board_string, w_pawns, w_rooks, w_knights,
+     w_bishops, w_queens, w_king, b_pawns, b_rooks, b_knights, 
+     b_bishops, b_queens, b_king);
+     }
+     static void string_to_bitboards(char [] board, long wp, long wr, 
+     long wn, long wb, long wq, long wk, long bp, long br, long bn, 
+     long bb, long bq, long bk)
+     {
+     for (int i=0; i<64; ++i)
+     {
+     switch (board[i])
+     {
+     case 'P':
+     wp |= ( 1 << i);
+     break;
+     case 'R':
+     wr |= ( 1 << i);
+     break;
+     case 'N':
+     wn |= ( 1 << i);
+     break;
+     case 'B':
+     wb |= ( 1 << i);
+     break;
+     case 'Q':
+     wq |= ( 1 << i);
+     break;
+     case 'K':
+     wk |= ( 1 << i);
+     break;
+     case 'p':
+     bp |= ( 1 << i);
+     break;
+     case 'r':
+     br |= ( 1 << i);
+     break;
+     case 'n':
+     bn |= ( 1 << i);
+     break;
+     case 'b':
+     bb |= ( 1 << i);
+     break;
+     case 'q':
+     bq |= ( 1 << i);
+     break;
+     case 'k':
+     bk |= ( 1 << i);
+     break;
+                  
+     }
+     }
+     }
+     public static void visualize_bitboard (Bitboards b) //Just for debugging purposes
+     {
+        
+     }
+     public static void draw_board (long wp, long wr, 
+     long wn, long wb, long wq, long wk, long bp, long br, long bn, 
+     long bb, long bq, long bk)
+     {
+        
+     }
+     public Stringboard toStringboard ()
+     {
+     return null;
+     }
+     */
 
 }
