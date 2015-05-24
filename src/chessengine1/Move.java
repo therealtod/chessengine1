@@ -35,12 +35,12 @@ public class Move
         move &= 0xffff0fff;
         move |= p << 12;
     }
-    public void set_capured_piece (int p)
+    public void set_capured_piece (char p)
     {
         move &= 0xfff0ffff;
         move |= p << 16;
     }
-    public void set_promoting_piece (int p)
+    public void set_promoting_piece (char p)
     {
         move &= 0xff0fffff;
         move |= p << 20;

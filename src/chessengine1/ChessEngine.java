@@ -16,7 +16,6 @@ public class ChessEngine
     public static void main (String[] args) 
     {
         Board.init();
-        
         MoveGenerator.init();
         Bitboards.set_init_position();
         new ChessboardGUI();

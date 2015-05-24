@@ -52,24 +52,20 @@ public class Board
 
     };
     
-    static private final long deBruijn = 0x03f79d71b4cb0a89L;
-    static private final int[] magicTable =
+    static String [] square_names =
     {
-        0, 1, 48, 2, 57, 49, 28, 3,
-        61, 58, 50, 42, 38, 29, 17, 4,
-        62, 55, 59, 36, 53, 51, 43, 22,
-        45, 39, 33, 30, 24, 18, 12, 5,
-        63, 47, 56, 27, 60, 41, 37, 16,
-        54, 35, 52, 21, 44, 32, 23, 11,
-        46, 26, 40, 15, 34, 20, 31, 10,
-        25, 14, 19, 9, 13, 8, 7, 6,
+        "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
+        "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
+        "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
+        "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4",
+        "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5",
+        "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
+        "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
+        "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"
+        
     };
+    
 
-    static public int bitScanForwardDeBruijn64(long b)
-    {
-        int idx = (int) (((b & -b) * deBruijn) >>> 58);
-        return magicTable[idx];
-    }
     //CONSTANTS
     static final long FILE_A = 72340172838076673L;
     static final long FILE_H = -9187201950435737472L;

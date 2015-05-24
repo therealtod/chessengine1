@@ -123,41 +123,66 @@ public class Bitboards
             {
                 case 'P':
                     w_pawns |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.white_pawn;
                     break;
                 case 'R':
                     w_rooks |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.white_rook;
                     break;
                 case 'N':
                     w_knights |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.white_knight;
                     break;
                 case 'B':
                     w_bishops |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.white_bishop;
                     break;
                 case 'Q':
                     w_queens |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.white_queen;
                     break;
                 case 'K':
                     w_king |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.white_king;
                     break;
                 case 'p':
                     b_pawns |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.black_pawn;
                     break;
                 case 'r':
                     b_rooks |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.black_rook;
                     break;
                 case 'n':
                     b_knights |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.black_knight;
                     break;
                 case 'b':
                     b_bishops |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.black_bishop;
                     break;
                 case 'q':
                     b_queens |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.black_queen;
                     break;
                 case 'k':
                     b_king |= Board.squares[i];
+
+                    Position.piece_in_square[i] = Pieces.black_king;
                     break;
                 default:
+                    Position.piece_in_square[i] = Pieces.blank;
                     break;
 
             }
@@ -175,7 +200,6 @@ public class Bitboards
     {
         int rank, file;
         char tmp;
-
         for (rank = 8; rank >= 1; rank--)
         {
             System.out.println("    +---+---+---+---+---+---+---+---+");
@@ -220,6 +244,26 @@ public class Bitboards
         }
         return;
     }
+    static private final long deBruijn = 0x03f79d71b4cb0a89L;
+    static private final int[] magicTable =
+    {
+        0, 1, 48, 2, 57, 49, 28, 3,
+        61, 58, 50, 42, 38, 29, 17, 4,
+        62, 55, 59, 36, 53, 51, 43, 22,
+        45, 39, 33, 30, 24, 18, 12, 5,
+        63, 47, 56, 27, 60, 41, 37, 16,
+        54, 35, 52, 21, 44, 32, 23, 11,
+        46, 26, 40, 15, 34, 20, 31, 10,
+        25, 14, 19, 9, 13, 8, 7, 6,
+    };
+
+    static public int bitScanForwardDeBruijn64(long b)
+    {
+        int idx = (int) (((b & -b) * deBruijn) >>> 58);
+        return magicTable[idx];
+    }
+
+    public static int max_move_buffer_size = 200;
     /*
      public static void init_chessboard()
      {
