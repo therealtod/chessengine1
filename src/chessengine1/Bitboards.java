@@ -1,6 +1,8 @@
 package chessengine1;
 
 import static chessengine1.Position.*;
+import static chessengine1.Board.*;
+import static chessengine1.MoveGenerator.sliding_attacks;
 
 /**
  *
@@ -8,6 +10,140 @@ import static chessengine1.Position.*;
  */
 public class Bitboards
 {
+    public static void init_char_bitsets ()
+    {
+        onebyte_bitset[0] = 1;
+        for (int i=1; i<8; i++)
+        {
+            onebyte_bitset[i] =  (onebyte_bitset[i-1]) << 1;
+        }
+    }
+    
+    public static void init_sliding_attacks ()
+    {
+        int state6bit, state8bit,attack8bit;
+        int square, slide;
+        for (square=0; square <8; ++ square)
+        {
+            for (state6bit =0; state6bit <64 ; ++state6bit)
+            {
+                state8bit = state6bit << 1;
+                attack8bit = 0;
+                if(square <7)
+                {
+                    attack8bit |= onebyte_bitset[square+1];
+                }
+                slide = square+2;
+                while (slide <8)
+                {
+                    if (((~state8bit) & onebyte_bitset[slide-1] )!= 0)
+                    {
+                        attack8bit |= onebyte_bitset[slide];
+                    }
+                    else break;
+                    ++slide;
+                }
+                if (square > 0)
+                {
+                    attack8bit |= onebyte_bitset[square -1];
+                }
+                slide = square -2;
+                while (slide >= 0)
+                {
+                    if(((~state8bit & onebyte_bitset[slide +1])) != 0)
+                    {
+                        attack8bit |= onebyte_bitset[slide];
+                    }
+                    else break;
+                    --slide;
+                }
+                sliding_attacks[square][state6bit] = attack8bit;
+            }
+        }
+        
+    }
+    public static void init_masks()
+    {
+        int file, rank, square, diag_a8h1, diag_a1h8;
+        for (file = 1; file < 9; ++file)
+        {
+            for (rank = 1; rank < 9; ++rank)
+            {
+                rank_mask[board_index[file][rank]] = squares[board_index[2][rank]]
+                        | squares[board_index[3][rank]]
+                        | squares[board_index[4][rank]]
+                        | squares[board_index[5][rank]]
+                        | squares[board_index[6][rank]]
+                        | squares[board_index[7][rank]];
+
+                file_mask[board_index[file][rank]] = squares[board_index[file][2]]
+                        | squares[board_index[file][3]]
+                        | squares[board_index[file][4]]
+                        | squares[board_index[file][5]]
+                        | squares[board_index[file][6]]
+                        | squares[board_index[file][7]];
+
+                diag_a8h1 = file + rank;
+                diag_a8h1_mask[board_index[file][rank]] = 0x0L;
+                if (diag_a8h1 < 10)
+                {
+                    for (square = 2; square < diag_a8h1; ++square)
+                    {
+                        diag_a8h1_mask[board_index[file][rank]]
+                                |= squares[board_index[square][diag_a8h1 - square]];
+                    }
+                } else
+                {
+                    for (square = 2; square < 17 - diag_a8h1; ++square)
+                    {
+                        diag_a8h1_mask[board_index[file][rank]]
+                                |= squares[board_index[diag_a8h1 + square - 9][9 - square]];
+                    }
+                }
+
+                diag_a1h8 = file - rank;
+                diag_a1h8_mask[board_index[file][rank]] = 0x0L;
+                if (diag_a1h8 > -1)
+                {
+                    for (square = 2; square < 8 - diag_a1h8; ++square)
+                    {
+                        diag_a1h8_mask[board_index[file][rank]]
+                                |= squares[board_index[diag_a1h8 + square][square]];
+                    }
+                } else
+                {
+                    for (square = 2; square < 8 + diag_a1h8; ++square)
+                    {
+                        diag_a1h8_mask[board_index[file][rank]]
+                                |= squares[board_index[square][square - diag_a1h8]];
+                    }
+                }
+            }
+
+        }
+    }
+
+    public static void init_magic_numbers()
+    {
+        int file, rank, diag_a8h1, diag_a1h8;
+        for (file = 1; file < 9; ++file)
+        {
+            for (rank = 1; rank < 9; ++rank)
+            {
+                diag_a8h1 = file + rank;
+                diag_a8h1_magic_number[board_index[file][rank]]
+                        = diag_a8h1_magics[diag_a8h1 - 2];
+
+                diag_a1h8 = file - rank;
+                diag_a1h8_magic_number[board_index[file][rank]]
+                        = diag_a1h8_magics[diag_a1h8 + 7];
+
+                file_magic_number[board_index[file][rank]] = 
+                        file_magics[file-1];
+            }
+        }
+
+    }
 
     public static Stringboard toStringboard()
     {
@@ -240,7 +376,7 @@ public class Bitboards
             System.in.read();
         } catch (Exception e)
         {
-
+            System.exit(-1);
         }
         return;
     }
@@ -264,82 +400,65 @@ public class Bitboards
     }
 
     public static int max_move_buffer_size = 200;
-    /*
-     public static void init_chessboard()
-     {
-        
-     char [] board_string = Stringboard.getInit_position();
-        
-     long w_pawns= 0L, w_rooks= 0L, w_knights= 0L, w_bishops= 0L, 
-     w_queens= 0L, w_king= 0L, b_pawns= 0L, b_rooks= 0L, 
-     b_knights= 0L, b_bishops= 0L, b_queens= 0L, b_king= 0L;
-        
-     string_to_bitboards (board_string, w_pawns, w_rooks, w_knights,
-     w_bishops, w_queens, w_king, b_pawns, b_rooks, b_knights, 
-     b_bishops, b_queens, b_king);
-     }
-     static void string_to_bitboards(char [] board, long wp, long wr, 
-     long wn, long wb, long wq, long wk, long bp, long br, long bn, 
-     long bb, long bq, long bk)
-     {
-     for (int i=0; i<64; ++i)
-     {
-     switch (board[i])
-     {
-     case 'P':
-     wp |= ( 1 << i);
-     break;
-     case 'R':
-     wr |= ( 1 << i);
-     break;
-     case 'N':
-     wn |= ( 1 << i);
-     break;
-     case 'B':
-     wb |= ( 1 << i);
-     break;
-     case 'Q':
-     wq |= ( 1 << i);
-     break;
-     case 'K':
-     wk |= ( 1 << i);
-     break;
-     case 'p':
-     bp |= ( 1 << i);
-     break;
-     case 'r':
-     br |= ( 1 << i);
-     break;
-     case 'n':
-     bn |= ( 1 << i);
-     break;
-     case 'b':
-     bb |= ( 1 << i);
-     break;
-     case 'q':
-     bq |= ( 1 << i);
-     break;
-     case 'k':
-     bk |= ( 1 << i);
-     break;
-                  
-     }
-     }
-     }
-     public static void visualize_bitboard (Bitboards b) //Just for debugging purposes
-     {
-        
-     }
-     public static void draw_board (long wp, long wr, 
-     long wn, long wb, long wq, long wk, long bp, long br, long bn, 
-     long bb, long bq, long bk)
-     {
-        
-     }
-     public Stringboard toStringboard ()
-     {
-     return null;
-     }
-     */
+
+    public static int[] onebyte_bitset = new int[8];
+    public static long rank_mask[] = new long[64];
+    public static long file_mask[] = new long[64];
+    public static long diag_a8h1_mask[] = new long[64];
+    public static long diag_a1h8_mask[] = new long[64];
+    public static long file_magic_number[] = new long[64];
+    public static long diag_a8h1_magic_number[] = new long[64];
+    public static long diag_a1h8_magic_number[] = new long[64];
+
+    private static long[] diag_a8h1_magics =
+    {
+        0x0L,
+        0x0L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0080808080808080L,
+        0x0040404040404040L,
+        0x0020202020202020L,
+        0x0010101010101010L,
+        0x0008080808080808L,
+        0x0L,
+        0x0L
+
+    };
+
+    private static long[] diag_a1h8_magics =
+    {
+        0x0L,
+        0x0L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x0101010101010100L,
+        0x8080808080808000L,
+        0x4040404040400000L,
+        0x2020202020000000L,
+        0x1010101000000000L,
+        0x0808080000000000L,
+        0x0L,
+        0x0L
+    };
+
+    private static long[] file_magics =
+    {
+        0x8040201008040200L,
+        0x4020100804020100L,
+        0x2010080402010080L,
+        0x1008040201008040L,
+        0x0804020100804020L,
+        0x0402010080402010L,
+        0x0201008040201008L,
+        0x0100804020100804L
+    };
 
 }

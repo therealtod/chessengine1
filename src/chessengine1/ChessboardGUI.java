@@ -21,21 +21,7 @@ public class ChessboardGUI extends JPanel implements MouseListener,
         x=0;
         y=0;
     }
-    /*public static void draw_chessboard ()
-    {     
-    
-        JFrame myboard = new JFrame("My board");
-        myboard.setSize (new Dimension (800, 800));
-        myboard.setDefaultCloseOperation (EXIT_ON_CLOSE);
-        JPanel panel = new JPanel (new GridLayout (8, 8));
-        myboard.add(panel);
-        Pieces_set pics = new Pieces_set();
-        for (int i =0; i<64; ++i)
-        {
-        
-        }
-    }   
-    */
+
     
     @Override
     public void paintComponent (Graphics g)

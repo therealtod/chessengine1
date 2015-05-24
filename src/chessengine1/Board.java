@@ -82,11 +82,22 @@ public class Board
     static final long KING_B7 = 460039L;
     static final long KNIGHT_C6 = 43234889994L;
 
-    static long white_targets;
-    static long black_targets;
-    static long white_pieces;
-    static long black_pieces;
+
 
     static long[] squares = new long[64];
     static boolean white_is_on_move = true;
+    
+    static final int [][] board_index = 
+    {
+        {0,1,2,3,4,5,6,7},
+        {8,9,10,11,12,13,14,15},
+        {16,17,18,19,20,21,22,23},
+        {24,25,26,27,28,29,30,31},
+        {32,33,34,35,36,37,38,39},
+        {40,41,42,43,44,45,46,47},
+        {48,49,50,51,52,53,54,55},
+        {56,57,58,59,60,61,62,63}
+        
+    };
+    
 }

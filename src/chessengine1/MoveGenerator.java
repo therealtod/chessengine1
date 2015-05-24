@@ -112,12 +112,7 @@ public class MoveGenerator
             }
         }
 
-        for (i = 0; i < 64; ++i)
-        {
-            System.out.println("A knight on " + Board.square_names[i] + " attacks these squares");
-            Bitboards.display(knight_attacks[i]);
-        }
-
+       
         //initializing all bishop moves
         for (i = 0; i < 64; ++i)
         {
@@ -125,6 +120,51 @@ public class MoveGenerator
             int file = Board.n_file[i];
             //TO BE CONTINUED
         }
+        
+        //initializing all king moves
+        for (i=0; i<64; ++i)
+        {
+            if (Board.n_rank[i]>1)
+            {
+                king_attacks[i] |= Board.squares[i-8];
+                if (Board.n_file[i] > 1)
+                {
+                    king_attacks[i] |= Board.squares[i-9];
+                }
+                if (Board.n_file [i] < 8)
+                {
+                    king_attacks[i] |= Board.squares[i-7];
+                }
+            }
+            if (Board.n_file[i] > 1)
+            {
+                king_attacks[i] |= Board.squares[i-1];
+            }
+            if (Board.n_file[i] < 8)
+            {
+                king_attacks[i] |= Board.squares[i+1];
+            }
+            if (Board.n_rank[i] < 8)
+            {
+                
+                king_attacks[i] |= Board.squares[i+8];
+                if (Board.n_file[i] > 1)
+                {
+                    king_attacks[i] |= Board.squares[i+7];
+                }
+                if (Board.n_file [i] < 8)
+                {
+                    king_attacks[i] |= Board.squares[i+9];
+                }
+            }
+        }
+        
+        for (i = 0; i < 64; ++i)
+        {
+            System.out.println("A king on " + Board.square_names[i] + " attacks these squares");
+            Bitboards.display(king_attacks[i]);
+        }
+        
     }
 
     static void generate_possible_moves()
@@ -227,6 +267,8 @@ public class MoveGenerator
     private static long[] bishop_attacks = new long[64];
     private static long[] queen_attacks = new long[64];
     private static long[] king_attacks = new long[64];
+    
+    public static long [][] sliding_attacks = new long [64][64];
     //private static long [] white_rook_attacks = new long [64];
     //private static long [] black_rook_attacks = new long [64];
     //private static long [] white_knight_attacks = new long [64];
