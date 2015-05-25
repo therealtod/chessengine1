@@ -10,6 +10,13 @@ import static chessengine1.MoveGenerator.sliding_attacks;
  */
 public class Bitboards
 {
+    public static void init_Bitboards_data()
+    {
+        init_char_bitsets();
+        init_sliding_attacks();
+        init_magic_numbers();
+        init_masks();
+    }
     public static void init_char_bitsets ()
     {
         onebyte_bitset[0] = 1;
@@ -460,5 +467,15 @@ public class Bitboards
         0x0201008040201008L,
         0x0100804020100804L
     };
+     public static int [] rank_shift_number = {
+        1,  1,  1,  1,  1,  1,  1,  1,
+        9,  9,  9,  9,  9,  9,  9,  9,
+       17, 17, 17, 17, 17, 17, 17, 17,  
+       25, 25, 25, 25, 25, 25, 25, 25,
+       33, 33, 33, 33, 33, 33, 33, 33,
+       41, 41, 41, 41, 41, 41, 41, 41,
+       49, 49, 49, 49, 49, 49, 49, 49,
+       57, 57, 57, 57, 57, 57, 57, 57
+};
 
 }

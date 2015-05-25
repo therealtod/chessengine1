@@ -14,7 +14,7 @@ public class MoveGenerator
 
     public static void init()
     {
-        int i, j;
+        int i, j, file, rank;
 
         //initializing all white pawn moves
         for (i = 8; i < 16; ++i)
@@ -62,19 +62,6 @@ public class MoveGenerator
             }
         }
 
-        //initializing all rook moves
-        for (i = 0; i < 64; ++i)
-        {
-            for (j = 0; j < 64; ++j)
-            {
-                if ((Board.n_rank[i] == Board.n_rank[j] || Board.n_file[i] == Board.n_file[j]) && i != j)
-                {
-                    rook_attacks[i] |= Board.squares[j];
-                }
-            }
-            //rook_attacks [i] -= Board.squares[i];
-        }
-
         //initializing all knight moves
         for (i = 0; i < 64; ++i)
         {
@@ -112,59 +99,117 @@ public class MoveGenerator
             }
         }
 
-       
-        //initializing all bishop moves
+        //initializing all king moves
         for (i = 0; i < 64; ++i)
         {
-            int rank = Board.n_rank[i];
-            int file = Board.n_file[i];
-            //TO BE CONTINUED
-        }
-        
-        //initializing all king moves
-        for (i=0; i<64; ++i)
-        {
-            if (Board.n_rank[i]>1)
+            if (Board.n_rank[i] > 1)
             {
-                king_attacks[i] |= Board.squares[i-8];
+                king_attacks[i] |= Board.squares[i - 8];
                 if (Board.n_file[i] > 1)
                 {
-                    king_attacks[i] |= Board.squares[i-9];
+                    king_attacks[i] |= Board.squares[i - 9];
                 }
-                if (Board.n_file [i] < 8)
+                if (Board.n_file[i] < 8)
                 {
-                    king_attacks[i] |= Board.squares[i-7];
+                    king_attacks[i] |= Board.squares[i - 7];
                 }
             }
             if (Board.n_file[i] > 1)
             {
-                king_attacks[i] |= Board.squares[i-1];
+                king_attacks[i] |= Board.squares[i - 1];
             }
             if (Board.n_file[i] < 8)
             {
-                king_attacks[i] |= Board.squares[i+1];
+                king_attacks[i] |= Board.squares[i + 1];
             }
             if (Board.n_rank[i] < 8)
             {
-                
-                king_attacks[i] |= Board.squares[i+8];
+
+                king_attacks[i] |= Board.squares[i + 8];
                 if (Board.n_file[i] > 1)
                 {
-                    king_attacks[i] |= Board.squares[i+7];
+                    king_attacks[i] |= Board.squares[i + 7];
                 }
-                if (Board.n_file [i] < 8)
+                if (Board.n_file[i] < 8)
                 {
-                    king_attacks[i] |= Board.squares[i+9];
+                    king_attacks[i] |= Board.squares[i + 9];
                 }
             }
         }
-        
+
+        //initializing rank attacks for rooks and queens
         for (i = 0; i < 64; ++i)
         {
-            System.out.println("A king on " + Board.square_names[i] + " attacks these squares");
-            Bitboards.display(king_attacks[i]);
+            for (j = 0; j < 64; ++j)
+            {
+                rank_attacks[i][j] = 0x0L
+                        | sliding_attacks[Board.n_file[i] - 1][j]
+                        << Bitboards.rank_shift_number[i] - 1;
+
+            }
         }
-        
+        //initializing file attacks for rooks and queens
+        for (i = 0; i < 64; ++i)
+        {
+            for (j = 0; j < 64; ++j)
+            {
+                file_attacks[i][j] = 0x0L;
+                for (int attack_square = 0; attack_square < 8; ++attack_square)
+                {
+                    if ((sliding_attacks[8 - Board.n_rank[i]][j]
+                            & Bitboards.onebyte_bitset[attack_square]) != 0)
+                    {
+                        file = Board.n_file[i];
+                        rank = 8 - attack_square;
+                        file_attacks[i][j]
+                                |= Board.squares[Board.board_index[file][rank]];
+                    }
+                }
+            }
+        }
+
+       
+
+        //initializing diagonal attacks for bishops and queens
+        for (i = 0; i < 64; ++i)
+        {
+            for (j = 0; j < 64; ++j)
+            {
+                diag_a8h1_attacks[i][j] = 0x0L;
+                for (int attack_square = 0; attack_square < 8; ++attack_square)
+                {
+                    if ((sliding_attacks[(8 - Board.n_rank[i] - 1)
+                            < (Board.n_file[i] - 1)
+                                    ? (8 - Board.n_rank[i]) : (Board.n_file[i] - 1)][j]
+                            & Bitboards.onebyte_bitset[attack_square]) != 0)
+                    {
+                        int diag_a8h1 = Board.n_file[i] + Board.n_rank[i];
+                        if (diag_a8h1 < 10)
+                        {
+                            file = attack_square + 1;
+                            rank = diag_a8h1 - file;
+                        } else
+                        {
+                            rank = 8 - attack_square;
+                            file = diag_a8h1 - rank;
+                        }
+                        if ((file > 0) && (file < 9) && (rank > 0) && (rank < 9))
+                        {
+                            diag_a8h1_attacks[i][j]
+                                    |= Board.squares[Board.board_index[file][rank]];
+                        }
+                    }
+                }
+            }
+        }
+         for (i = 0; i < 64; ++i)
+        {
+            for (j = 0; j < 64; ++j)
+            {
+                System.out.println("A slider on " + Board.square_names[i] + "With a certain occupancy state attacks these squares");
+                Bitboards.display(diag_a8h1_attacks[i][j]);
+            }
+        }
     }
 
     static void generate_possible_moves()
@@ -237,8 +282,8 @@ public class MoveGenerator
                 candidate_destin = knight_attacks[from_square] & targets;
                 while (candidate_destin != 0)
                 {
-                    to_square = 
-                            Bitboards.bitScanForwardDeBruijn64(candidate_destin);
+                    to_square
+                            = Bitboards.bitScanForwardDeBruijn64(candidate_destin);
                     move.set_to_square(to_square);
                     move.set_capured_piece(Position.piece_in_square[to_square]);
                     Position.possiblemoves.add(move);
@@ -262,13 +307,15 @@ public class MoveGenerator
     private static long[] black_pawn_double_moves = new long[64];
     private static long[] white_pawn_captures = new long[64];
     private static long[] black_pawn_captures = new long[64];
-    private static long[] rook_attacks = new long[64];
+    private static long[][] rank_attacks = new long[64][64];
+    private static long[][] file_attacks = new long[64][64];
+    private static long[][] diag_a8h1_attacks = new long[64][64];
     private static long[] knight_attacks = new long[64];
     private static long[] bishop_attacks = new long[64];
     private static long[] queen_attacks = new long[64];
     private static long[] king_attacks = new long[64];
-    
-    public static long [][] sliding_attacks = new long [64][64];
+
+    public static long[][] sliding_attacks = new long[64][64];
     //private static long [] white_rook_attacks = new long [64];
     //private static long [] black_rook_attacks = new long [64];
     //private static long [] white_knight_attacks = new long [64];
